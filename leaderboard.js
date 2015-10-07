@@ -10,13 +10,19 @@ if(Meteor.isClient){
     'player': function(){
       return PlayerList.find();
     },
-    otherHelperFunction: function(){
-      return "some other function"
+    'numberOfPlayers': function(){
+      return PlayerList.find().count();
+    }
+  });
+  //EVENTS
+  //events keyword that specifies the events for named template
+  Template.leaderboard.events({
+    'click .player': function(){
+      console.log("you clicked a  player")
     }
   });
 } // end isClient
 
 if(Meteor.isServer){
   // This only runs on server
-  console.log("Hello Server");
 }

@@ -1,0 +1,8 @@
+<template name="leaderboard">
+	<h1>There are {{numberOfPlayers}} People Playing</h1>
+	<ul>
+		{{#each player}}
+			<li class="player">{{name}}: {{score}}</li>
+		{{/each}}
+	</ul>
+</template>
