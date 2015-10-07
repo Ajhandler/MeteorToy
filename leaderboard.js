@@ -8,7 +8,7 @@ if(Meteor.isClient){
   //.helpers keyword to define multiple keyword functions in one
   Template.leaderboard.helpers({
     'player': function(){
-      return PlayerList.find();
+      return PlayerList.find({}, {sort: {score: -1, name: 1} });
     },
     'numberOfPlayers': function(){
       return PlayerList.find().count();
@@ -19,16 +19,28 @@ if(Meteor.isClient){
       if(playerId == selectedPlayer){
         return 'selected';
       }
+    },
+    'showSelectedPlayer': function(){
+      var selectedPlayer = Session.get('selectedPlayer');
+      return PlayerList.findOne(selectedPlayer)
     }
-  });
+  });//end helpers
   //EVENTS
   //events keyword that specifies the events for named template
   Template.leaderboard.events({
     'click .player': function(){
      var playerId = this._id;
      Session.set('selectedPlayer', playerId);
-    }
-  });
+    },
+    'click .increment': function(){
+      var selectedPlayer = Session.get('selectedPlayer');
+      PlayerList.update(selectedPlayer, {$inc: {score: 5} });
+    },
+    'click .decrement': function(){
+      var selectedPlayer = Session.get('selectedPlayer');
+      PlayerList.update(selectedPlayer, {$inc: {score: -5} });
+    },
+  });// end events
 } // end isClient
 
 if(Meteor.isServer){
