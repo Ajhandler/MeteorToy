@@ -1,5 +1,4 @@
-PlayerList = new Mongo.Collection('players');
-if(Meteor.isClient){
+ Meteor.subscribe('thePlayers');
   // Only runs on the client
   // Template = searches templates
   //.leaderboard = reference to  the name of template
@@ -7,7 +6,7 @@ if(Meteor.isClient){
   Template.leaderboard.helpers({
     'player': function(){
       var currentUserId = Meteor.userId();
-      return PlayerList.find({createdBy: currentUserId},
+      return PlayerList.find({},
                              {sort: {score: -1, name: 1} });
     },
     'numberOfPlayers': function(){
@@ -34,32 +33,21 @@ if(Meteor.isClient){
     },
     'click .increment': function(){
       var selectedPlayer = Session.get('selectedPlayer');
-      PlayerList.update(selectedPlayer, {$inc: {score: 5} });
+      Meteor.call('modifyPlayerScore', selectedPlayer, 5);
     },
     'click .decrement': function(){
       var selectedPlayer = Session.get('selectedPlayer');
-      PlayerList.update(selectedPlayer, {$inc: {score: -5} });
+      Meteor.call('modifyPlayerScore', selectedPlayer, -5);
     },
     'click .remove':function(){
       var selectedPlayer = Session.get('selectedPlayer');
-      PlayerList.remove(selectedPlayer)
+      Meteor.call('removePlayerData', selectedPlaye);
     }
   });// end leaderboard events
   Template.addPlayerForm.events({
     'submit form':function(event){
       event.preventDefault();
       var playerNameVar = event.target.playerName.value;
-      var currentUserId = Meteor.userId();
-      PlayerList.insert({
-        name: playerNameVar,
-        score: 0,
-        createdBy: currentUserId
-      });
-
+      Meteor.call('insertPlayerData', playerNameVar);
     }
   });
-} // end isClient
-
-if(Meteor.isServer){
-  // This only runs on server
-}
