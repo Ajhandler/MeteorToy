@@ -1,23 +1,22 @@
-if (Meteor.isClient) {
-  // counter starts at 0
-  Session.setDefault('counter', 0);
+PlayerList = new Mongo.Collection('players');
 
-  Template.hello.helpers({
-    counter: function () {
-      return Session.get('counter');
+if(Meteor.isClient){
+  // Only runs on the client
+  console.log("Hello Client");
+  // Template = searches templates
+  //.leaderboard = reference to  the name of template
+  //.helpers keyword to define multiple keyword functions in one
+  Template.leaderboard.helpers({
+    'player': function(){
+      return PlayerList.find();
+    },
+    otherHelperFunction: function(){
+      return "some other function"
     }
   });
+} // end isClient
 
-  Template.hello.events({
-    'click button': function () {
-      // increment the counter when button is clicked
-      Session.set('counter', Session.get('counter') + 1);
-    }
-  });
-}
-
-if (Meteor.isServer) {
-  Meteor.startup(function () {
-    // code to run on server at startup
-  });
+if(Meteor.isServer){
+  // This only runs on server
+  console.log("Hello Server");
 }
