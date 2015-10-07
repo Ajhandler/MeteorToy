@@ -1,14 +1,14 @@
 PlayerList = new Mongo.Collection('players');
-
 if(Meteor.isClient){
   // Only runs on the client
-  console.log("Hello Client");
   // Template = searches templates
   //.leaderboard = reference to  the name of template
   //.helpers keyword to define multiple keyword functions in one
   Template.leaderboard.helpers({
     'player': function(){
-      return PlayerList.find({}, {sort: {score: -1, name: 1} });
+      var currentUserId = Meteor.userId();
+      return PlayerList.find({createdBy: currentUserId},
+                             {sort: {score: -1, name: 1} });
     },
     'numberOfPlayers': function(){
       return PlayerList.find().count();
@@ -49,10 +49,13 @@ if(Meteor.isClient){
     'submit form':function(event){
       event.preventDefault();
       var playerNameVar = event.target.playerName.value;
+      var currentUserId = Meteor.userId();
       PlayerList.insert({
         name: playerNameVar,
-        score: 0
+        score: 0,
+        createdBy: currentUserId
       });
+
     }
   });
 } // end isClient
